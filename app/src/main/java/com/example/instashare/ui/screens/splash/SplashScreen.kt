@@ -1,4 +1,4 @@
-package com.example.instashare
+package com.example.instashare.ui.screens.splash
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -12,7 +12,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,25 +21,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
+import com.example.instashare.R
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
     onSplashFinished: () -> Unit
 ) {
-//    val composition by rememberLottieComposition(
-//        LottieCompositionSpec.RawRes(R.raw.lottie_loader)
-//    )
-//
-//    val progress by animateLottieCompositionAsState(
-//        composition = composition,
-//        iterations = LottieConstants.IterateForever
-//    )
 
     LaunchedEffect(Unit) {
         delay(2000)
@@ -80,12 +67,6 @@ fun SplashScreen(
                 modifier = Modifier.padding(top = 8.dp, bottom = 24.dp),
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
             )
-
-//            LottieAnimation(
-//                composition = composition,
-//                progress = { progress },
-//                modifier = Modifier.size(120.dp) // Increased from 120dp to 200dp
-//            )
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.instashare
+package com.example.instashare.ui.screens.home
 
 import android.content.Context
 import android.widget.Toast
@@ -18,8 +18,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Checklist
+import androidx.compose.material.icons.filled.ChecklistRtl
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
@@ -59,7 +63,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.tv.material3.OutlinedButtonDefaults
+import com.example.instashare.R
+import com.example.instashare.ui.navigation.Nav_Home_Env
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -123,7 +128,7 @@ fun HomeScreen(navController: NavController) {
                 containerColor = Color(0xFF5C6BC0),
                 contentColor = Color.White
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add")
+                Icon(Icons.Default.Checklist, contentDescription = "Add")
             }
         },
         content = { innerPadding ->

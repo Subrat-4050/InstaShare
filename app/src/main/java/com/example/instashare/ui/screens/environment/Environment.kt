@@ -1,4 +1,4 @@
-package com.example.instashare
+package com.example.instashare.ui.screens.environment
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.tv.material3.Text
+import com.example.chatui.ChatScreen
 
 @Composable
 fun Environment(navController: NavController) {
@@ -85,7 +86,7 @@ fun Environment(navController: NavController) {
             if (selectedEnvironment) {
                 PartnersList()
             } else {
-                DashBoard()
+                ChatScreen()
             }
         }
     }
@@ -93,7 +94,7 @@ fun Environment(navController: NavController) {
 
 @Preview
 @Composable
-private fun EvvironmentPreview() {
+private fun EnvironmentPreview() {
     Environment(
         navController = NavController(LocalContext.current)
     )
