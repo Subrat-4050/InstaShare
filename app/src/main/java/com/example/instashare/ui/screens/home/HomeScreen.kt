@@ -1,5 +1,6 @@
 package com.example.instashare.ui.screens.home
 
+import android.content.ClipData
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -18,10 +19,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.ChecklistRtl
+import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
@@ -49,6 +52,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,6 +60,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.Clipboard
+import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -64,7 +72,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.instashare.R
+import com.example.instashare.ui.Sharing.ShareTextToOtherApps
 import com.example.instashare.ui.navigation.Nav_Home_Env
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,6 +82,12 @@ fun HomeScreen(navController: NavController) {
     val partnerId = rememberSaveable { mutableStateOf("") }
     val openDialogState = remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
+    val scope = rememberCoroutineScope()
+
+    val context = LocalContext.current
+
+    val envCode = "ABC-123-ABC"
+    val clipboardManager = LocalClipboard.current
 
     Scaffold(
         topBar = {
@@ -84,7 +100,7 @@ fun HomeScreen(navController: NavController) {
                 ),
                 actions = {
                     IconButton(onClick = { /* Handle search */ }) {
-                        Icon(Icons.Default.Search, contentDescription = "Search")
+                        Icon(Icons.AutoMirrored.Filled.HelpOutline, contentDescription = "Search")
                     }
                 }
             )
@@ -109,7 +125,11 @@ fun HomeScreen(navController: NavController) {
                     }
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = { /* Handle profile */ }) {
+                IconButton(
+                    onClick = {
+                        navController.navigate("profile")
+                    }
+                ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -124,7 +144,9 @@ fun HomeScreen(navController: NavController) {
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* Handle add new post */ },
+                onClick = {
+                    navController.navigate("environment_parent_list")
+                },
                 containerColor = Color(0xFF5C6BC0),
                 contentColor = Color.White
             ) {
@@ -197,7 +219,7 @@ fun HomeScreen(navController: NavController) {
                                 fontSize = 16.sp
                             )
                             Text(
-                                text = "ABC-123-ABC",
+                                text = envCode,
                                 color = Color.Black,
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
@@ -208,10 +230,11 @@ fun HomeScreen(navController: NavController) {
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceEvenly
                             ) {
-                                val context = LocalContext.current
+
                                 Button(
                                     onClick = {
                                         context.showToast("Share Code clicked!")
+                                        ShareTextToOtherApps(context, envCode)
                                     },
                                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3F51B5)),
                                     modifier = Modifier
@@ -224,9 +247,12 @@ fun HomeScreen(navController: NavController) {
                                 var isCopied by remember { mutableStateOf(false) }
 
                                 Button(
-                                    onClick = {
-                                        context.showToast("Code Copied to Clipboard!")
+                                    onClick = {                                        context.showToast("Code Copied to Clipboard!")
                                         isCopied = true
+                                        scope.launch {
+                                            val clipData = ClipData.newPlainText("user_input_label", envCode)
+                                            clipboardManager.setClipEntry(ClipEntry(clipData))
+                                        }
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = if (isCopied) Color(0xFF4CAF50) else Color(0xFFE0E0E0)
@@ -296,7 +322,6 @@ fun HomeScreen(navController: NavController) {
 
                             Spacer(modifier = Modifier.height(16.dp))
 
-                            val context = LocalContext.current
 
                             Button(
                                 onClick = {
@@ -334,7 +359,7 @@ fun HomeScreen(navController: NavController) {
                 OutlinedButton(
                     onClick = {
                         openDialogState.value = false
-                        navController.navigate("environment")
+                        navController.navigate("environment_dashboard")
                     },
                     colors = ButtonDefaults.outlinedButtonColors(
                         containerColor = Color.Green,

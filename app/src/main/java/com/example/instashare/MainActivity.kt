@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
- 
+
 @Composable
 fun InstashareApp() {
     InstashareTheme {

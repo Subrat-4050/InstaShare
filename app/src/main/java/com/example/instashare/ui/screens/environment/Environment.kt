@@ -26,8 +26,8 @@ import androidx.tv.material3.Text
 import com.example.chatui.ChatScreen
 
 @Composable
-fun Environment(navController: NavController) {
-    var selectedEnvironment by rememberSaveable { mutableStateOf(true) }
+fun Environment(navController: NavController, env: Boolean = true) {
+    var selectedEnvironment by rememberSaveable { mutableStateOf(env) }
 
     Column(
         modifier = Modifier
