@@ -57,9 +57,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ClipEntry
 import androidx.compose.ui.platform.Clipboard
 import androidx.compose.ui.platform.LocalClipboard
@@ -182,11 +185,21 @@ fun HomeScreen(navController: NavController) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         modifier = Modifier.padding(top = 32.dp, bottom = 24.dp)
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.insta_share_app_logo),
-                            contentDescription = "InstaShare Logo",
-                            modifier = Modifier.size(100.dp)
-                        )
+                        Box(
+                            modifier = Modifier
+                                .size(92.dp)
+                                .clip(RoundedCornerShape(32.dp))
+                                .background(Color.Gray)
+                                .align(Alignment.CenterHorizontally)
+                        ) {
+                            Image(
+                                modifier = Modifier
+                                    .scale(1.5f),
+                                contentScale = ContentScale.Crop,
+                                painter = painterResource(R.drawable.insta_share_app_logo),
+                                contentDescription = "App Logo"
+                            )
+                        }
                         Text(
                             text = "InstaShare",
                             color = Color.White,
@@ -202,72 +215,21 @@ fun HomeScreen(navController: NavController) {
                         )
                     }
 
-                    Card(
+                    Button(
+                        onClick = {
+                            navController.navigate("create_environment")
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 16.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White)
+                            .height(50.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.White)
                     ) {
-                        Column(
-                            modifier = Modifier.padding(16.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "Your code is",
-                                color = Color.Gray,
-                                fontSize = 16.sp
-                            )
-                            Text(
-                                text = envCode,
-                                color = Color.Black,
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(vertical = 8.dp)
-                            )
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-
-                                Button(
-                                    onClick = {
-                                        context.showToast("Share Code clicked!")
-                                        ShareTextToOtherApps(context, envCode)
-                                    },
-                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF3F51B5)),
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(end = 4.dp)
-                                ) {
-                                    Text("Share Code")
-                                }
-
-                                var isCopied by remember { mutableStateOf(false) }
-
-                                Button(
-                                    onClick = {                                        context.showToast("Code Copied to Clipboard!")
-                                        isCopied = true
-                                        scope.launch {
-                                            val clipData = ClipData.newPlainText("user_input_label", envCode)
-                                            clipboardManager.setClipEntry(ClipEntry(clipData))
-                                        }
-                                    },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = if (isCopied) Color(0xFF4CAF50) else Color(0xFFE0E0E0)
-                                    ),
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .padding(start = 4.dp)
-                                ) {
-                                    Text(
-                                        text = if (isCopied) "Copied!" else "Copy Code",
-                                        color = if (isCopied) Color.White else Color.Black
-                                    )
-                                }
-                            }
-                        }
+                        Text(
+                            text = "Create Environment",
+                            fontSize = 28.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF3F51B5)
+                        )
                     }
 
                     Row(

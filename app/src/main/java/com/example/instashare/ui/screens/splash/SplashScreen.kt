@@ -1,11 +1,14 @@
 package com.example.instashare.ui.screens.splash
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -15,6 +18,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -45,14 +50,29 @@ fun SplashScreen(
             verticalArrangement = Arrangement.Center
         ) {
 
-            Image(
-                painter = painterResource(id = R.drawable.insta_share_app_logo),
-                contentDescription = "Instashare Logo",
+//            Image(
+//                painter = painterResource(id = R.drawable.insta_share_app_logo),
+//                contentDescription = "Instashare Logo",
+//                modifier = Modifier
+//                    .size(200.dp)
+//                    .clip(RoundedCornerShape(32.dp)),
+//                contentScale = ContentScale.Crop
+//            )
+            Box(
                 modifier = Modifier
-                    .size(200.dp)
-                    .clip(RoundedCornerShape(32.dp)),
-                contentScale = ContentScale.Crop
-            )
+                    .size(92.dp)
+                    .clip(RoundedCornerShape(32.dp))
+                    .background(Color.Gray)
+                    .align(Alignment.CenterHorizontally)
+            ) {
+                Image(
+                    modifier = Modifier
+                        .scale(1.5f),
+                    contentScale = ContentScale.Crop,
+                    painter = painterResource(R.drawable.insta_share_app_logo),
+                    contentDescription = "App Logo"
+                )
+            }
 
             Text(
                 text = "Welcome to InstaShare",
