@@ -217,7 +217,7 @@ fun HomeScreen(navController: NavController) {
 
                     Button(
                         onClick = {
-                            navController.navigate("create_environment")
+                            navController.navigate("")
                         },
                         modifier = Modifier
                             .fillMaxWidth()

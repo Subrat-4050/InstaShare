@@ -2,6 +2,7 @@ package com.example.instashare.ui.screens.environment
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -78,7 +79,6 @@ fun ChatBubble(txt: String) {
     Box(
         modifier = Modifier
             .background(color = Color.Transparent)
-
             .chatBubble(
                 alignment = BubbleAlignment.LEFT,
                 corners = 2.dp,
