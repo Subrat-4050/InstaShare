@@ -1,11 +1,10 @@
 package com.example.instashare.ui.screens.home
 
-import android.content.ClipData
 import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,15 +19,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.HelpOutline
-import androidx.compose.material.icons.automirrored.filled.List
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Checklist
-import androidx.compose.material.icons.filled.ChecklistRtl
-import androidx.compose.material.icons.filled.HelpOutline
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
@@ -49,12 +42,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -63,10 +54,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.ClipEntry
-import androidx.compose.ui.platform.Clipboard
 import androidx.compose.ui.platform.LocalClipboard
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -75,9 +63,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.instashare.R
-import com.example.instashare.ui.Sharing.ShareTextToOtherApps
+import com.example.instashare.data.ApiService
+import com.example.instashare.data.RetrofitClient
+import com.example.instashare.data.RoomResponse
 import com.example.instashare.ui.navigation.Nav_Home_Env
+import com.google.gson.Gson
 import kotlinx.coroutines.launch
+import retrofit2.Call
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.lang.Exception
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,11 +82,20 @@ fun HomeScreen(navController: NavController) {
     val openDialogState = remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
     val scope = rememberCoroutineScope()
-
     val context = LocalContext.current
 
-    val envCode = "ABC-123-ABC"
+    val envCode = "1243"
     val clipboardManager = LocalClipboard.current
+
+    val retrofit = Retrofit
+        .Builder()
+        .baseUrl("http://192.168.1.70:5000/")
+        .addConverterFactory(ScalarsConverterFactory.create())
+        .build()
+
+    val apiService = retrofit.create(ApiService::class.java)
+
+
 
     Scaffold(
         topBar = {
@@ -217,7 +222,38 @@ fun HomeScreen(navController: NavController) {
 
                     Button(
                         onClick = {
-                            navController.navigate("")
+                            scope.launch {
+                                try {
+                                    apiService.saveRoom(envCode, "Hello from Android")
+                                        .enqueue(object : retrofit2.Callback<String> {
+                                            override fun onResponse(
+                                                call: Call<String?>,
+                                                response: Response<String?>
+                                            ) {
+                                                Log.d("Response11", response.isSuccessful.toString())
+                                                val gson = Gson()
+                                                if(response.isSuccessful) {
+                                                    val code = gson.fromJson(response.body().toString(),
+                                                        RoomResponse::class.java).code
+                                                    navController.navigate("environment_dashboard/$code")
+                                                    Log.d("Response11", response.body().toString())
+                                                }
+                                                else
+                                                    context.showToast("Error: ${response.code()}")
+                                            }
+
+                                            override fun onFailure(
+                                                p0: Call<String?>,
+                                                p1: Throwable
+                                            ) {
+                                                Toast.makeText(context, "Error: ${p1.message}", Toast.LENGTH_SHORT).show()
+                                            }
+                                        })
+                                }
+                                catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
                         },
                         modifier = Modifier
                             .fillMaxWidth()

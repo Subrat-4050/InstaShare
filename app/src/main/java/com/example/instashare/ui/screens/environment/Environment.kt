@@ -26,7 +26,7 @@ import androidx.tv.material3.Text
 import com.example.chatui.ChatScreen
 
 @Composable
-fun Environment(navController: NavController, env: Boolean = true) {
+fun Environment(navController: NavController, env: Boolean = false, roomCode: String = "0000") {
     var selectedEnvironment by rememberSaveable { mutableStateOf(env) }
 
     Column(
@@ -86,7 +86,7 @@ fun Environment(navController: NavController, env: Boolean = true) {
             if (selectedEnvironment) {
                 PartnersList()
             } else {
-                ChatScreen()
+                ChatScreen(navController, roomCode)
             }
         }
     }

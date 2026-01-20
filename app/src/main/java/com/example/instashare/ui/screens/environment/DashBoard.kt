@@ -1,9 +1,9 @@
 package com.example.chatui
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.provider.OpenableColumns
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -30,9 +29,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.AttachFile
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -57,13 +56,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavController
 import com.example.instashare.models.Message
 import com.example.instashare.models.MessageType
 import com.example.instashare.models.sampleMessage1
 import com.example.instashare.models.sampleMessage2
+import com.example.instashare.ui.components.TimerDisplay
 import com.example.instashare.ui.screens.environment.BubbleAlignment
 import com.example.instashare.ui.screens.environment.chatBubble
-import kotlin.comparisons.then
 
 lateinit var messageStructure: Message
 
@@ -96,7 +96,7 @@ fun Context.getFilename(uri: Uri): String? {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen() {
+fun ChatScreen(navController: NavController, roomCode: String = "0000") {
     var messageText by remember { mutableStateOf("") }
     var isFile by remember { mutableStateOf(false) }
     var messageList by remember { mutableStateOf(listOf<Message>(sampleMessage1, sampleMessage2)) }
@@ -161,17 +161,30 @@ fun ChatScreen() {
                     modifier = Modifier.width(12.dp)
                 )
                 Text(
-                    text = "1232", style = MaterialTheme.typography.titleLarge, color = Color.Black
+                    text = roomCode, style = MaterialTheme.typography.titleLarge, color = Color.Black
                 )
             }
 
-            IconButton(
-                onClick = {}) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "View Photos",
-                    tint = Color.Black
-                )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                TimerDisplay(Modifier, 200)
+                IconButton(
+                    onClick = {
+                        val sendIntent = Intent(Intent.ACTION_SEND).apply{
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, "Join my chat session with code: ${roomCode}")
+                        }
+                        val shareIntent = Intent.createChooser(sendIntent, "Share chat code via")
+                        context.startActivity(shareIntent)
+                    }) {
+                    Icon(
+                        imageVector = Icons.Default.Share,
+                        contentDescription = "Share Code",
+                        tint = Color.Black
+                    )
+                }
             }
         }
 
@@ -337,6 +350,6 @@ fun ChatScreen() {
 @Composable
 fun ChatScreenPreview() {
     MaterialTheme {
-        ChatScreen()
+        ChatScreen(navController = NavController(LocalContext.current))
     }
 }
